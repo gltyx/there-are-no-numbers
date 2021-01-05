@@ -688,4 +688,4 @@ function play() {
 }
 
 firstTime();
-cheat();
+//cheat();
