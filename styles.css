@@ -1,0 +1,177 @@
+:root {
+    --genHeight: 50px;
+}
+html {
+    font-family: monospace;
+    font-size: 15px;
+}
+button,
+input[type="submit"],
+input[type="reset"] {
+    background: lightgray;
+    color: black;
+    border: solid;
+    border-width: 2px;
+    border-color: grey;
+    padding: 10px 30px;
+    border-radius: 3px;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    margin: 10px 3px;
+}
+p,
+h1,
+div {
+    color: white;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+h1 {
+    font-size: 34px;
+}
+.toggle {
+    color: rgb(248, 177, 248);
+    background-color: grey;
+    -webkit-text-fill-color: rgb(248, 177, 248);
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: rgb(248, 177, 248);
+}
+#theGame {
+    display: flex;
+    width: 100%;
+}
+#desc {
+    margin: 0px 15px;
+    width: 50%;
+}
+button:hover {
+    background-color: grey;
+}
+p:hover,
+h1:hover {
+    cursor: default;
+}
+button:hover {
+    cursor: pointer;
+}
+.game {
+    width: 50%;
+}
+body {
+    background-color: black;
+}
+#isDone {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 10px;
+    font-size: 20px;
+}
+#numberBar {
+    background-color: black;
+    transition-duration: 2s;
+}
+.isDone {
+    transition-duration: 0.5s;
+    margin-right: 10px;
+}
+.hidden {
+    display: none;
+}
+.bought {
+    color: rgb(248, 177, 248);
+    background-color: grey;
+    -webkit-text-fill-color: rgb(248, 177, 248);
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: rgb(248, 177, 248);
+}
+.bought:hover {
+    cursor: default;
+}
+.restart {
+    margin: 10px;
+}
+.tabButton {
+    padding: 5px 15px;
+    margin-top: 5px;
+}
+.barContainer {
+    border: solid;
+    border-color: whitesmoke;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    height: var(--genHeight);
+    margin: 30px 20px;
+    display: flex;
+    align-items: center;
+}
+#alphaBar {
+    background-color: lightcoral;
+}
+#betaBar {
+    background-color: rgb(2, 179, 2);
+}
+#gammaBar {
+    background-color: rgb(253, 94, 36);
+}
+#deltaBar {
+    background-color: plum;
+}
+#rhoBar {
+    background-color: grey;
+}
+#XiBar {
+    background-color: rgb(73, 73, 255);
+}
+#numberCon {
+    width: 100%;
+}
+#numberBar {
+    width: 0%;
+}
+#settings {
+    position: absolute;
+    bottom: 10px;
+    padding: 20px 30px;
+}
+.generatorBar {
+    height: var(--genHeight);
+    text-align: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.upgradeContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.upgrade {
+    margin: 10px 5px;
+}
+.generatorsText {
+    color: white;
+    margin-left: 20px;
+    font-size: 35px;
+    -webkit-text-fill-color: white;
+    -webkit-text-stroke-width: 0.7px;
+    -webkit-text-stroke-color: black;
+}
+#generators {
+    width: 100%;
+}
+@media (min-width: 1000px) {
+    #generators {
+        width: 960px;
+    }
+    #isDone {
+        width: 50%;
+    }
+    #theGame {
+        width: 50%;
+    }
+}

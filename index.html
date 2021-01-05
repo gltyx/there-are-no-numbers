@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<head>
+    <title>No Numbers</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <header>
+        <h1 id="gameTitle">there are no numbers</h1>
+        <div id="tabs">
+            <button id="generatorsButton" class="tabButton">Generators</button>
+            <button id="restartButton" class="tabButton">Restart</button>
+            <button id="upgradesButton" class="tabButton upgrades hidden">
+                Upgrades
+            </button>
+            <button id="skillsButton" class="tabButton skills hidden">
+                Skills
+            </button>
+            <button id="alterButton" class="tabButton alter hidden">
+                Alter
+            </button>
+            <button id="automationButton" class="tabButton automation hidden">
+                Automation
+            </button>
+            <button id="powersButton" class="tabButton powers hidden">
+                Powers
+            </button>
+            <button id="numberButton" class="tabButton number hidden">
+                Number
+            </button>
+        </div>
+        <div id="isDone">
+            <p class="isDone">--</p>
+            <p id="alphaIsDone" class="isDone hidden">&alpha;</p>
+            <p id="betaIsDone" class="isDone hidden">&beta;</p>
+            <p id="gammaIsDone" class="isDone hidden">&gamma;</p>
+            <p id="deltaIsDone" class="isDone hidden">&delta;</p>
+            <p id="rhoIsDone" class="isDone hidden">&rho;</p>
+            <p id="XiIsDone" class="isDone hidden">&Xi;</p>
+            <p class="isDone">--</p>
+        </div>
+    </header>
+    <div id="generators" class="game">
+        <div id="generators" class="gameElement">
+            <div id="alpha" class="generator">
+                <div class="barContainer">
+                    <div id="alphaBar" class="generatorBar">
+                        <p class="generatorsText">&alpha;</p>
+                    </div>
+                </div>
+            </div>
+            <div id="beta" class="generator beta hidden">
+                <div class="barContainer">
+                    <div id="betaBar" class="generatorBar beta">
+                        <p class="generatorsText">&beta;</p>
+                    </div>
+                </div>
+            </div>
+            <div id="gamma" class="generator gamma hidden">
+                <div class="barContainer">
+                    <div id="gammaBar" class="generatorBar gamma">
+                        <p class="generatorsText">&gamma;</p>
+                    </div>
+                </div>
+            </div>
+            <div id="delta" class="generator delta hidden">
+                <div class="barContainer">
+                    <div id="deltaBar" class="generatorBar delta">
+                        <p class="generatorsText">&delta;</p>
+                    </div>
+                </div>
+            </div>
+            <div id="rho" class="generator rho hidden">
+                <div class="barContainer">
+                    <div id="rhoBar" class="generatorBar rho">
+                        <p class="generatorsText">&rho;</p>
+                    </div>
+                </div>
+            </div>
+            <div id="Xi" class="generator Xi hidden">
+                <div class="barContainer">
+                    <div id="XiBar" class="generatorBar Xi">
+                        <p class="generatorsText">&Xi;</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="theGame">
+        <div id="restart" class="game">
+            <div class="container">
+                <div id="alphaRestart" class="restart">
+                    <button id="betaUnlock" class="restartUpgrade">
+                        &beta;
+                    </button>
+                    <button id="upgradesUnlock" class="restartUpgrade">
+                        Up &alpha;
+                    </button>
+                </div>
+                <div id="betaRestart" class="beta hidden restart">
+                    <button id="gammaUnlock" class="restartUpgrade">
+                        &gamma;
+                    </button>
+                    <button id="skillsUnlock" class="restartUpgrade">
+                        Sk &beta;
+                    </button>
+                </div>
+                <div id="gammaRestart" class="gamma hidden restart">
+                    <button id="deltaUnlock" class="restartUpgrade">
+                        &delta;
+                    </button>
+                    <button id="alterUnlock" class="restartUpgrade">
+                        Al &gamma;
+                    </button>
+                </div>
+                <div id="deltaRestart" class="delta restart hidden">
+                    <button id="rhoUnlock" class="restartUpgrade">&rho;</button>
+                    <button id="automationUnlock" class="restartUpgrade">
+                        Au &delta;
+                    </button>
+                </div>
+                <div id="rhoRestart" class="rho restart hidden">
+                    <button id="XiUnlock" class="restartUpgrade">&Xi;</button>
+                    <button id="powersUnlock" class="restartUpgrade">
+                        Po &rho;
+                    </button>
+                </div>
+                <div id="XiRestart" class="Xi restart hidden">
+                    <button id="numberUnlock" class="restartUpgrade">
+                        Nu &Xi;
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="upgrades" class="game">
+            <div class="container">
+                <div id="timeUpgrades" class="upgradeContainer">
+                    <button id="alphaTimeUpgrade" class="upgrade">
+                        &alpha; Time
+                    </button>
+                    <button id="betaTimeUpgrade" class="upgrade beta hidden">
+                        &beta; Time
+                    </button>
+                    <button id="gammaTimeUpgrade" class="upgrade gamma hidden">
+                        &gamma; Time
+                    </button>
+                    <button id="deltaTimeUpgrade" class="upgrade delta hidden">
+                        &delta; Time
+                    </button>
+                    <button id="rhoTimeUpgrade" class="upgrade rho hidden">
+                        &rho; Time
+                    </button>
+                    <button id="XiTimeUpgrade" class="upgrade Xi hidden">
+                        &Xi; Time
+                    </button>
+                </div>
+                <div id="unspentUpgrades" class="hidden beta upgradeContainer">
+                    <button id="alphaUnspentUpgrade" class="upgrade">
+                        Unspent &alpha;
+                    </button>
+                    <button id="betaUnspentUpgrade" class="upgrade beta hidden">
+                        Unspent &beta;
+                    </button>
+                    <button
+                        id="gammaUnspentUpgrade"
+                        class="upgrade gamma hidden"
+                    >
+                        Unspent &gamma;
+                    </button>
+                    <button
+                        id="deltaUnspentUpgrade"
+                        class="upgrade delta hidden"
+                    >
+                        Unspent &delta;
+                    </button>
+                    <button id="rhoUnspentUpgrade" class="upgrade rho hidden">
+                        Unspent &rho;
+                    </button>
+                </div>
+                <div id="alterUpgrades" class="hidden alter upgradeContainer">
+                    <button id="alphaAlterUpgrade" class="hidden upgrade">
+                        &alpha; Sac Boost
+                    </button>
+                    <button id="betaAlterUpgrade" class="hidden upgrade">
+                        &beta; Sac Boost
+                    </button>
+                    <button id="gammaAlterUpgrade" class="hidden upgrade">
+                        &gamma; Sac Boost
+                    </button>
+                    <button id="deltaAlterUpgrade" class="hidden upgrade">
+                        &delta; Sac Boost
+                    </button>
+                    <button id="rhoAlterUpgrade" class="hidden upgrade">
+                        &rho; Sac Boost
+                    </button>
+                </div>
+                <div
+                    id="automationUpgrade"
+                    class="hidden automation upgradeContainer"
+                >
+                    <button id="alphaAutoUpgrade" class="hidden upgrade">
+                        &alpha; Auto Boost
+                    </button>
+                    <button id="betaAutoUpgrade" class="hidden upgrade">
+                        &beta; Auto Boost
+                    </button>
+                    <button id="gammaAutoUpgrade" class="hidden upgrade">
+                        &gamma; Auto Boost
+                    </button>
+                    <button id="deltaAutoUpgrade" class="hidden upgrade">
+                        &delta; Auto Boost
+                    </button>
+                    <button id="rhoAutoUpgrade" class="hidden upgrade">
+                        &rho; Auto Boost
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="skills" class="game">
+            <div class="container">
+                <button id="globalTimeSkill" class="skill">&beta; Boost</button>
+                <div id="skillGamma" class="alter hidden">
+                    <button id="gammaMaxSkill" class="alter skill hidden">
+                        &gamma; Max Boost
+                    </button>
+                    <button id="gammaBaseSkill" class="alter skill hidden">
+                        &gamma; Eff Boost
+                    </button>
+                </div>
+                <div id="skillDelta" class="automation hidden">
+                    <button id="deltaAutoSkill" class="automation skill hidden">
+                        &delta; Auto Boost
+                    </button>
+                    <button id="deltaTimeSkill" class="automation skill hidden">
+                        &delta; Time Boost
+                    </button>
+                </div>
+                <button id="XiUltSkill" class="Xi hidden skill">
+                    &Xi; Boost
+                </button>
+            </div>
+        </div>
+        <div id="alter" class="game container">
+            <div>
+                <button id="alphaAlterSac">&alpha;</button>
+                <button id="betaAlterSac">&beta;</button>
+                <button id="gammaAlterSac">&gamma;</button>
+                <button id="deltaAlterSac" class="hidden delta">&delta;</button>
+                <button id="rhoAlterSac" class="hidden rho">&rho;</button>
+            </div>
+            <div id="autoSacButtons" class="hidden automation">
+                <p>Toggle Autosacrificing:</p>
+                <button id="alphaAutomation" class="hidden">&alpha;</button>
+                <button id="betaAutomation" class="hidden">&beta;</button>
+                <button id="gammaAutomation" class="hidden">&gamma;</button>
+                <button id="deltaAutomation" class="hidden">&delta;</button>
+                <button id="rhoAutomation" class="hidden">&rho;</button>
+            </div>
+        </div>
+        <div id="automation" class="game container">
+            <div class="upgradeContainer">
+                <button id="alphaAutoSac" class="automate">
+                    &alpha; AutoSac
+                </button>
+                <button id="betaAutoSac" class="automate">
+                    &beta; AutoSac
+                </button>
+                <button id="gammaAutoSac" class="automate">
+                    &gamma; AutoSac
+                </button>
+                <button id="deltaAutoSac" class="automate">
+                    &delta; AutoSac
+                </button>
+                <button id="rhoAutoSac" class="hidden automate rho">
+                    &rho; AutoSac
+                </button>
+            </div>
+            <div id="keepRes" class="hidden rho upgradeContainer">
+                <button id="betaKeepUpgrade" class="rho hidden automate">
+                    Auto &beta;
+                </button>
+                <button id="gammaKeepUpgrade" class="rho hidden automate">
+                    Auto &gamma;
+                </button>
+                <button id="deltaKeepUpgrade" class="rho hidden automate">
+                    Auto &delta;
+                </button>
+                <button id="rhoKeepUpgrade" class="rho hidden automate">
+                    Auto &rho;
+                </button>
+                <button id="XiKeepUpgrade" class="rho hidden automate">
+                    Auto &Xi;
+                </button>
+            </div>
+        </div>
+        <div id="powers" class="game container">
+            <p>Powers reset everything except powers and number.</p>
+            <button id="upgPower" class="rho power">Autobuy Upgrades</button>
+            <button id="skiPower" class="rho power">Autobuy Skills</button>
+            <button id="autPower" class="rho power">Autobuy Automation</button>
+            <button id="autoPower" class="power Xi hidden">
+                Automation Power
+            </button>
+            <button id="sacrificePower" class="power Xi hidden">
+                Alter Power
+            </button>
+            <button id="timePower" class="power Xi hidden">Time Power</button>
+        </div>
+        <div id="number" class="game container">
+            <div id="numberCon" class="barContainer">
+                <div id="numberBar" class="generatorBar"></div>
+            </div>
+            <button id="numberIncrement">Increment Number</button>
+        </div>
+        <div id="desc" class="desc"></div>
+    </div>
+    <!--<div id="settings">
+        <button id="settings">Settings</button>
+    </div>-->
+    <script src="script.js"></script>
+</body>
