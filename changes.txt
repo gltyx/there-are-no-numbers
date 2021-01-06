@@ -16,3 +16,9 @@ bug fixes:
 - percentage bars randomly go to NaN
 - percentage perm being 0 when time < 0.05s
 (now will perm be 100 and will pulse when being autosacced)
+
+1.2 - 
+
+bug fixes:
+- auto rho being available when rho is unlocked rather than xi unlocked
+- prestige effects not being properly added on

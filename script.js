@@ -53,25 +53,27 @@ let toKeep = ["alpha"];
 let timesPrestiged = 0;
 
 // set new values if power upgrades unlocked
-function applyPowerUpgrades(item) {
-    persistant.time
-        ? player[item].timeUpgrades(2 * 1.2 ** timesPrestiged)
-        : player[item].timeUpgrades(1.05 ** timesPrestiged);
-    persistant.auto
-        ? (player[item].unspentFactor = 3 * 1.5 ** timesPrestiged)
-        : (player[item].unspentFactor = 2 * 1.2 ** timesPrestiged);
-    persistant.sacrifice
-        ? (player[item].n = 2.7 * 1.3 ** timesPrestiged)
-        : (player[item].n = N * 1.2 ** timesPrestiged);
+function applyPowerUpgrades() {
+    for (item in player) {
+        persistant.time
+            ? player[item].timeUpgrades(2 * 1.2 ** timesPrestiged)
+            : player[item].timeUpgrades(1.05 ** timesPrestiged);
+        persistant.auto
+            ? (player[item].unspentFactor = 3 * 1.5 ** timesPrestiged)
+            : (player[item].unspentFactor = 2 * 1.2 ** timesPrestiged);
+        persistant.sacrifice
+            ? (player[item].n = 2.7 * 1.3 ** timesPrestiged)
+            : (player[item].n = N * 1.2 ** timesPrestiged);
+    }
 }
 
 // reset everything and add powers
 function prestige() {
     for (item in player) {
-        applyPowerUpgrades(item);
         if (player[item].autoSac) player[item].toggleAutoSac();
     }
     play();
+    applyPowerUpgrades();
 }
 
 class resource {
@@ -443,21 +445,21 @@ function buyPower(id) {
         buttons.forEach((button) => {
             addAutobuy(button.id);
         });
-        showDiv("upgradeToggle")
+        showDiv("upgradeToggle");
     } else if (persistant.ski) {
         persistant.ski = false;
         let buttons = document.querySelectorAll(".skill");
         buttons.forEach((button) => {
             addAutobuy(button.id);
         });
-        showDiv("skillToggle")
+        showDiv("skillToggle");
     } else if (persistant.aut) {
         persistant.aut = false;
         let buttons = document.querySelectorAll(".automate");
         buttons.forEach((button) => {
             addAutobuy(button.id);
         });
-        showDiv("automateToggle")
+        showDiv("automateToggle");
     }
 }
 
@@ -494,7 +496,7 @@ function buttonActual(id) {
             updateNumber();
         }
     } else if (id.includes("Toggle")) {
-        let buttons = document.querySelectorAll(`.${id.slice(0,-6)}`);
+        let buttons = document.querySelectorAll(`.${id.slice(0, -6)}`);
         buttons.forEach((button) => {
             addAutobuy(button.id);
         });
@@ -589,9 +591,9 @@ function showDesc(e) {
             "Increase Number Bar. <br /> Getting a power also increases number bar.",
             "Restart &Xi;",
         ],
-        upgradeToggle: ["Toggle Autobuying Upgrades",""],
-        autoToggle: ["Toggle Autobuying Automation",""],
-        skillToggle: ["Toggle Autobuying Skills",""],
+        upgradeToggle: ["Toggle Autobuying Upgrades", ""],
+        autoToggle: ["Toggle Autobuying Automation", ""],
+        skillToggle: ["Toggle Autobuying Skills", ""],
     };
     const tabs = [
         "Generators",
