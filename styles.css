@@ -2,8 +2,8 @@
     --genHeight: 50px;
 }
 html {
-    font-family: monospace;
-    font-size: 15px;
+    font-family: arial;
+    font-size: 20px;
 }
 button,
 input[type="submit"],
@@ -31,7 +31,7 @@ div {
     align-items: center;
 }
 h1 {
-    font-size: 34px;
+    font-size: 40px;
 }
 .toggle {
     color: rgb(248, 177, 248);
@@ -122,10 +122,10 @@ body {
     background-color: plum;
 }
 #rhoBar {
-    background-color: grey;
+    background-color: rgb(73, 73, 255);
 }
 #XiBar {
-    background-color: rgb(73, 73, 255);
+    background-color: grey;
 }
 #numberCon {
     width: 100%;
@@ -133,7 +133,7 @@ body {
 #numberBar {
     width: 0%;
 }
-#settings {
+#settingsButton {
     position: absolute;
     bottom: 10px;
     padding: 20px 30px;
@@ -153,12 +153,22 @@ body {
 .upgrade {
     margin: 10px 5px;
 }
+.tooFast {
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+@keyframes pulse {
+    0%   {filter: invert(0%)}
+  50%  {filter: invert(100%)}
+  100% {filter: invert(0%)}
+}
 .generatorsText {
     color: white;
     margin-left: 20px;
-    font-size: 35px;
+    font-size: 40px;
     -webkit-text-fill-color: white;
-    -webkit-text-stroke-width: 0.7px;
+    -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: black;
 }
 #generators {
@@ -169,7 +179,7 @@ body {
         width: 960px;
     }
     #isDone {
-        width: 50%;
+        width: 960px;
     }
     #theGame {
         width: 50%;

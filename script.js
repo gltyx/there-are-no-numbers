@@ -1,5 +1,7 @@
 /*
-1) settings -> music?, toggle autobuyers, view current time
+1) settings -> music?
+
+2) balance
 
 -- clean up code (always)
 */
@@ -26,6 +28,8 @@ const COST = {
     powers: 4,
     number: 5,
 };
+
+const UNLOCKED = [true, false, false, false, false, false];
 
 // cost of each upgrade (index)
 const TIMES = [5, 30, 90, 250, 700, 2000];
@@ -54,8 +58,8 @@ function applyPowerUpgrades(item) {
         ? player[item].timeUpgrades(2 * 1.2 ** timesPrestiged)
         : player[item].timeUpgrades(1.05 ** timesPrestiged);
     persistant.auto
-        ? (player[item].sacPower = 2 * 1.5 ** timesPrestiged)
-        : (player[item].sacPower = 1);
+        ? (player[item].unspentFactor = 3 * 1.5 ** timesPrestiged)
+        : (player[item].unspentFactor = 2 * 1.2 ** timesPrestiged);
     persistant.sacrifice
         ? (player[item].n = 2.7 * 1.3 ** timesPrestiged)
         : (player[item].n = N * 1.2 ** timesPrestiged);
@@ -63,22 +67,22 @@ function applyPowerUpgrades(item) {
 
 // reset everything and add powers
 function prestige() {
-    play();
     for (item in player) {
         applyPowerUpgrades(item);
         if (player[item].autoSac) player[item].toggleAutoSac();
     }
+    play();
 }
 
 class resource {
-    constructor(name, time, base) {
+    constructor(name, time, base, ul) {
         this.name = name;
         this.bar = document.querySelector(`#${name}Bar`); // bar to fill up node
         this.doneTab = document.querySelector(`#${name}IsDone`); // thing on top that says if done or not
         this.automationButton = document.querySelector(`#${name}Automation`);
         this.point = false; // is the bar full (resource is collected)
-        this.unlocked = false; // is the resource bought from repeat
-        this.actualTime = time;
+        this.unlocked = ul; // is the resource bought from repeat
+        this.actualTime = time; // time in s for bar to fill
         this.bar.style.transitionDuration = UPDATE * 2 + "s"; // add transition time to smooth bar
         this.time = time; // time to fill bar in seconds
         this.percentage = 0; // current bar percentage
@@ -88,20 +92,18 @@ class resource {
         this.timesSacrificed = 0; // times sacrificed in alter
         this.base = base; // base of alter upgrade
         this.n = N; // max factor of alter upgrade
-        this.sacPower = 1; // how many times to sacrifice
         this.autoSac = false; // should it auto sac
-        this.timesAutoSac = 0; // times it auto sacced
-        this.autoUpgrade = false; // is auto upgrade bought
         this.alterUpgrade = false; // is alter upgrade bought
+        this.unspentFactor = 2; // time factor reduction for unspent upgrade
     }
     toggleAutoSac() {
         this.autoSac = this.autoSac ? false : true;
         this.automationButton.classList.toggle("toggle");
-        // add toggle to automation buttons
+        if (this.time < UPDATE) this.bar.classList.add("tooFast");
+        if (!this.autoSac) this.bar.classList.remove("tooFast");
     }
     spend() {
         if (this.point) {
-            // check if resource is obtained
             this.reset();
             return true;
         } else {
@@ -109,33 +111,31 @@ class resource {
         }
     }
     reset() {
-        this.bar.style.width = "0%"; // reset bar width
+        this.bar.style.width = this.time < UPDATE ? "100%" : "0%"; // reset bar width
         this.point = false; // spend a point
         this.percentage = 0; // reset percentage
         this.doneTab.classList.add("hidden");
     }
     sacrafice() {
-        this.exponent = this.exponent + this.sacPower;
-        this.timesSacrificed = this.timesSacrificed + this.sacPower;
-        if (this.autoSac) this.timesAutoSac++;
+        this.exponent++;
+        this.timesSacrificed++;
     }
     resetExponent() {
         this.exponent = 0;
         player[getResourceAbove(this.name)].exponent =
             player[getResourceAbove(this.name)].exponent - this.timesSacrificed;
         this.timesSacrificed = 0;
-        this.timesAutoSac = 0;
     }
     getAlterBoost() {
         return (
-            (1 +
-                ((this.n - 1) * Math.log(2)) /
-                    Math.log((1 + this.base) * (this.exponent + 2))) /
+            (1 + (this.n - 1) * (1 + this.base) ** (-1 * this.exponent)) /
             this.n
         );
     }
     timeCalc() {
-        this.time = this.previousFull ? this.actualTime / 3 : this.actualTime;
+        this.time = this.previousFull
+            ? this.actualTime / this.unspentFactor
+            : this.actualTime;
         this.time = this.time * this.getAlterBoost();
     }
     updatePercentage() {
@@ -148,8 +148,9 @@ class resource {
                 this.point = true; // gain a point
                 this.doneTab.classList.remove("hidden");
             }
-
             this.bar.style.width = `${this.percentage}%`; // update bar
+        } else if (this.percentage === NaN) {
+            this.reset();
         }
     }
     unlock() {
@@ -161,9 +162,8 @@ class resource {
     }
 }
 
-function gameFinish() {
-    finishingTime = performance.now();
-    stopTime = true;
+function currentRunTime() {
+    let finishingTime = performance.now();
     let timeTaken = finishingTime - startingTime; // ms
     let milliseconds = timeTaken % 1000;
     timeTaken = (timeTaken - milliseconds) / 1000;
@@ -172,7 +172,12 @@ function gameFinish() {
     let minutes = timeTaken > 0 ? timeTaken % 60 : 0;
     timeTaken = (timeTaken - minutes) / 60;
     let hours = timeTaken > 0 ? timeTaken % 60 : 0;
-    console.log(hours, minutes, seconds, milliseconds);
+    return [hours, minutes, seconds];
+}
+
+function gameFinish() {
+    currentRunTime();
+    stopTime = true;
 }
 
 // update number bar
@@ -195,16 +200,21 @@ function getTimes() {
 // iterates through and generates each resource in player
 function resourceSetUp() {
     for (let i = 0; i < NAMES.length; i++) {
-        player[NAMES[i]] = new resource(NAMES[i], TIMES[i], BASES[i]);
+        player[NAMES[i]] = new resource(
+            NAMES[i],
+            TIMES[i],
+            BASES[i],
+            UNLOCKED[i]
+        );
         player[NAMES[i]].reset();
     }
 }
 
-// makes all times 1 sec
+// makes all times small
 function cheat() {
     // testing purposes
     for (item in player) {
-        player[item].actualTime = 0.1;
+        player[item].actualTime = 0.001;
     }
 }
 
@@ -327,27 +337,13 @@ function upgradeButtons(id) {
             player[change].actualTime = player[change].actualTime * 1.2;
             removeButtonFn(id);
         }
-    } else if (item.includes("Auto")) {
-        let change = item.slice(0, -4);
-        if (
-            player[change].point &&
-            player["delta"].point &&
-            player[change].timesAutoSac >= 10
-        ) {
-            player[change].autoUpgrade = true;
-            player[change].spend();
-            player["delta"].spend();
-            player[change].sacPower++;
-            player[change].resetExponent();
-            removeLowerExp(change);
-            removeButtonFn(id);
-        }
     } else if (item.includes("Keep")) {
         let change = item.slice(0, -4);
         if (player.rho.spend()) {
             bought.push(id);
+            bought.push(`${change}Unlock`);
             removeButtonFn(id);
-            addAutobuy(`${change}Unlock`);
+            UNLOCKED[NAMES.indexOf(change)] = true;
         }
     }
 }
@@ -379,8 +375,7 @@ function skillButtons(id) {
         if (player["delta"].spend()) {
             if (item.includes("Auto")) {
                 for (i in player) {
-                    player[i].autoPower++;
-                    player[i].n = player[i].n + 0.5;
+                    player[i].unspentFactor++;
                 }
             } else {
                 for (i in player) {
@@ -392,7 +387,7 @@ function skillButtons(id) {
     } else if (item.includes("Xi")) {
         if (player["Xi"].spend()) {
             for (i in player) {
-                player[i].autoPower++;
+                player[i].unspentFactor++;
                 player[i].n = player[i].n + 1;
                 player[i].actualTime = player[i].actualTime / 1.5;
                 player[i].base = player[i].base * 1.5;
@@ -425,7 +420,7 @@ function buyAutomation(id) {
 function resourceSacrifice(item) {
     if (player[item].spend()) {
         let above = getResourceAbove(item);
-        player[above].exponent = player[above].exponent + player[item].sacPower;
+        player[above].exponent++;
         player[item].sacrafice();
     }
 }
@@ -448,18 +443,21 @@ function buyPower(id) {
         buttons.forEach((button) => {
             addAutobuy(button.id);
         });
+        showDiv("upgradeToggle")
     } else if (persistant.ski) {
         persistant.ski = false;
         let buttons = document.querySelectorAll(".skill");
         buttons.forEach((button) => {
             addAutobuy(button.id);
         });
+        showDiv("skillToggle")
     } else if (persistant.aut) {
         persistant.aut = false;
         let buttons = document.querySelectorAll(".automate");
         buttons.forEach((button) => {
             addAutobuy(button.id);
         });
+        showDiv("automateToggle")
     }
 }
 
@@ -495,6 +493,13 @@ function buttonActual(id) {
         if (player.Xi.spend()) {
             updateNumber();
         }
+    } else if (id.includes("Toggle")) {
+        let buttons = document.querySelectorAll(`.${id.slice(0,-6)}`);
+        buttons.forEach((button) => {
+            addAutobuy(button.id);
+        });
+        let button = document.querySelector(`#${id}`);
+        button.classList.toggle("toggle");
     }
 }
 
@@ -505,7 +510,7 @@ function buttonfn(e) {
 
 function addAutobuy(id) {
     let button = document.querySelector(`#${id}`);
-    button.classList.add("autobuy");
+    button.classList.toggle("autobuy");
 }
 
 function revealButtons() {
@@ -518,12 +523,6 @@ function revealButtons() {
             )
                 showDiv(item + "AlterUpgrade");
             else hideDiv(item + "AlterUpgrade");
-            if (
-                (player[item].timesAutoSac >= 10 && player.delta.point) ||
-                player[item].autoUpgrade
-            )
-                showDiv(item + "AutoUpgrade");
-            else hideDiv(item + "AutoUpgrade");
         }
     }
 }
@@ -550,9 +549,19 @@ function startTime() {
     }, UPDATE * 1000);
 }
 
+function showTime() {
+    let [h, m, s] = currentRunTime();
+    let div = document.querySelector("#timeElapsed");
+    let time = document.createElement("p");
+    time.textContent = `${h} hours, ${m} minutes and ${s} seconds`;
+    div.textContent = "";
+    div.appendChild(time);
+}
+
 function revealButtonTime() {
     let revealTime = window.setInterval(() => {
         revealButtons();
+        showTime();
         if (stopTime) clearInterval(revealTime);
     }, 1000);
 }
@@ -567,22 +576,22 @@ function showDesc(e) {
         globalTimeSkill: ["Reduce Time of Everything.", "Restart &beta;."],
         gammaMaxSkill: ["Increase Max Alter Effect.", "Restart &gamma;."],
         gammaBaseSkill: ["Increase Sacrifice Efficiency.", "Restart &gamma;."],
-        deltaAutoSkill: ["Increase Automation Power.", "Restart &delta;."],
+        deltaAutoSkill: ["Increase Unspent Upgrade Bonus.", "Restart &delta;."],
         deltaTimeSkill: ["Reduce Time of Everything.", "Restart &delta;."],
-        XiUltSkill: [
-            "Boost Everything. <br /> (reduce time of everything, sacrifice efficiency, max alter effect, automation power)",
-            "Restart &Xi;.",
-        ],
+        XiUltSkill: ["Boost Everything.", "Restart &Xi;."],
         upgPower: ["Automatically Buy Upgrades.", "Restart &rho;."],
         skiPower: ["Automatically Buy Skills.", "Restart &rho;."],
         autPower: ["Automatically Buy Automation.", "Restart &rho;."],
         timePower: ["Reduce Time of Everything.", "Restart &Xi;."],
-        autoPower: ["Increase Automation Power.", "Restart &Xi;."],
+        autoPower: ["Increase Unspent Upgrade Effect.", "Restart &Xi;."],
         sacrificePower: ["Increase Max Alter Effect.", "Restart &Xi;."],
         numberIncrement: [
             "Increase Number Bar. <br /> Getting a power also increases number bar.",
             "Restart &Xi;",
         ],
+        upgradeToggle: ["Toggle Autobuying Upgrades",""],
+        autoToggle: ["Toggle Autobuying Automation",""],
+        skillToggle: ["Toggle Autobuying Skills",""],
     };
     const tabs = [
         "Generators",
@@ -593,6 +602,7 @@ function showDesc(e) {
         "Automation",
         "Powers",
         "Number",
+        "Settings",
     ];
     let div = document.querySelector("#desc");
     let title = document.createElement("p");
@@ -618,7 +628,7 @@ function showDesc(e) {
             if &${id.slice(0, -14)}; is unspent.`;
         cost.innerHTML = `Restart &${id.slice(0, -14)};.`;
     } else if (id.includes("KeepUpgrade")) {
-        text.innerHTML = `Autobuy &${id.slice(0, -11)}; permanently.`;
+        text.innerHTML = `Have &${id.slice(0, -11)}; permanently.`;
         cost.innerHTML = `Restart &rho;.`;
     } else if (id.includes("AlterUpgrade")) {
         text.innerHTML = `Boosts effectiveness of 
@@ -683,9 +693,7 @@ function play() {
     buttonLook();
     // set up player variable with all resources inside
     resourceSetUp();
-    // start alpha gain
-    player.alpha.unlocked = true;
 }
 
 firstTime();
-//cheat();
+cheat();

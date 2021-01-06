@@ -228,7 +228,7 @@
                 </div>
                 <div id="skillDelta" class="automation hidden">
                     <button id="deltaAutoSkill" class="automation skill hidden">
-                        &delta; Auto Boost
+                        &delta; Unspent Boost
                     </button>
                     <button id="deltaTimeSkill" class="automation skill hidden">
                         &delta; Time Boost
@@ -287,7 +287,7 @@
                 <button id="rhoKeepUpgrade" class="rho hidden automate">
                     Auto &rho;
                 </button>
-                <button id="XiKeepUpgrade" class="rho hidden automate">
+                <button id="XiKeepUpgrade" class="Xi hidden automate">
                     Auto &Xi;
                 </button>
             </div>
@@ -298,7 +298,7 @@
             <button id="skiPower" class="rho power">Autobuy Skills</button>
             <button id="autPower" class="rho power">Autobuy Automation</button>
             <button id="autoPower" class="power Xi hidden">
-                Automation Power
+                Unspent Power
             </button>
             <button id="sacrificePower" class="power Xi hidden">
                 Alter Power
@@ -311,10 +311,16 @@
             </div>
             <button id="numberIncrement">Increment Number</button>
         </div>
+        <div id="settings" class="game">
+            <p>Time elapsed:</p>
+            <div id="timeElapsed"><p>0 hours, 0 minutes and 0 seconds</p></div>
+            <button id="upgradeToggle" class="hidden toggle">Autobuy Upgrades</button>
+            <button id="automateToggle" class="hidden toggle">Autobuy Automation</button>
+            <button id="skillToggle" class="hidden toggle">Autobuy Skills</button>
+        </div>
+        <button id="settingsButton" class="tabButton">Settings</button>
         <div id="desc" class="desc"></div>
     </div>
-    <!--<div id="settings">
-        <button id="settings">Settings</button>
-    </div>-->
+
     <script src="script.js"></script>
 </body>
