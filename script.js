@@ -246,7 +246,8 @@ function toFill() {
 function buttonLook() {
     let buttons = document.querySelectorAll("button");
     buttons.forEach((button) => {
-        if (!bought.includes(button.id)) {
+        button.removeEventListener("click", buttonfn);
+        if (!bought.includes(button.id) || button.classList.contains('bought')) {
             button.addEventListener("click", buttonfn);
             button.classList.remove("bought");
         }
