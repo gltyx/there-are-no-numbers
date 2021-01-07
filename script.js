@@ -247,7 +247,7 @@ function buttonLook() {
     let buttons = document.querySelectorAll("button");
     buttons.forEach((button) => {
         button.removeEventListener("click", buttonfn);
-        if (!bought.includes(button.id) || button.classList.contains('bought')) {
+        if (!bought.includes(button.id)) {
             button.addEventListener("click", buttonfn);
             button.classList.remove("bought");
         }
