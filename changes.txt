@@ -22,3 +22,9 @@ bug fixes:
 bug fixes:
 - auto rho being available when rho is unlocked rather than xi unlocked
 - prestige effects not being properly added on
+
+1.3 - 
+
+bug fixes:
+- styling messing up when game is full screen
+- tried to fix lag after getting a new power

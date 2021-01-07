@@ -3,7 +3,6 @@
 
 2) balance
 
--- clean up code (always)
 */
 let player = {};
 
@@ -36,7 +35,7 @@ const TIMES = [5, 30, 90, 250, 700, 2000];
 
 const BASES = [0.01, 0.03, 0.1, 0.2, 0.3, 0.5];
 
-const UPDATE = 0.05; // refresh time in seconds
+const UPDATE = 0.06; // refresh time in seconds
 
 const N = 2;
 
@@ -45,6 +44,8 @@ let startingTime = performance.now();
 let finishingTime;
 
 let stopTime = false;
+
+let stopFinalTime = false;
 
 let numberBarWidth = 0;
 
@@ -57,23 +58,26 @@ function applyPowerUpgrades() {
     for (item in player) {
         persistant.time
             ? player[item].timeUpgrades(2 * 1.2 ** timesPrestiged)
-            : player[item].timeUpgrades(1.05 ** timesPrestiged);
+            : player[item].timeUpgrades(1.1 ** timesPrestiged);
         persistant.auto
             ? (player[item].unspentFactor = 3 * 1.5 ** timesPrestiged)
-            : (player[item].unspentFactor = 2 * 1.2 ** timesPrestiged);
+            : (player[item].unspentFactor = 2 * 1.3 ** timesPrestiged);
         persistant.sacrifice
-            ? (player[item].n = 2.7 * 1.3 ** timesPrestiged)
+            ? (player[item].n = 2.5 * 1.5 ** timesPrestiged)
             : (player[item].n = N * 1.2 ** timesPrestiged);
     }
 }
 
 // reset everything and add powers
 function prestige() {
+    stopTime = true;
     for (item in player) {
         if (player[item].autoSac) player[item].toggleAutoSac();
     }
     play();
     applyPowerUpgrades();
+    stopTime = false;
+    startTime();
 }
 
 class resource {
@@ -180,6 +184,7 @@ function currentRunTime() {
 function gameFinish() {
     currentRunTime();
     stopTime = true;
+    stopFinalTime = true;
 }
 
 // update number bar
@@ -547,7 +552,7 @@ function startTime() {
         toFill();
         automaticSac();
         automaticClick();
-        if (stopTime) clearInterval(gameTime);
+        if (stopTime || stopFinalTime) clearInterval(gameTime);
     }, UPDATE * 1000);
 }
 
@@ -564,7 +569,7 @@ function revealButtonTime() {
     let revealTime = window.setInterval(() => {
         revealButtons();
         showTime();
-        if (stopTime) clearInterval(revealTime);
+        if (stopFinalTime) clearInterval(revealTime);
     }, 1000);
 }
 
