@@ -563,12 +563,12 @@ function automaticClick() {
     let autoBuyTime = window.setInterval(() => {
         buttons = document.querySelectorAll(".autobuy");
         buttons.forEach((button) => {
-            button.click();
+            buttonActual(button.id);
             if (button.classList.contains("bought"))
                 addAutobuy(button.id, true);
         });
         if (stopTime) clearInterval(autoBuyTime);
-    }, 200);
+    }, 250);
 }
 
 function startTime() {
