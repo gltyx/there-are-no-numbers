@@ -35,7 +35,7 @@ const TIMES = [5, 30, 90, 250, 700, 2000];
 
 const BASES = [0.01, 0.03, 0.1, 0.2, 0.3, 0.5];
 
-const UPDATE = 0.06; // refresh time in seconds
+const UPDATE = 0.05; // refresh time in seconds
 
 const N = 2;
 
@@ -44,8 +44,6 @@ let startingTime = performance.now();
 let finishingTime;
 
 let stopTime = false;
-
-let stopFinalTime = false;
 
 let numberBarWidth = 0;
 
@@ -70,19 +68,27 @@ function applyPowerUpgrades() {
 
 // reset everything and add powers
 function prestige() {
-    stopTime = true;
     for (item in player) {
-        if (player[item].autoSac) player[item].toggleAutoSac();
+        player[item].prestigeReset();
     }
-    play();
+    let buttons = document.querySelectorAll("button");
+    buttons.forEach((button) => {
+        if (
+            !bought.includes(button.id) &&
+            button.classList.contains("bought")
+        ) {
+            button.addEventListener("click", buttonfn);
+            button.classList.remove("bought");
+        }
+        if (button.id.includes("Automation")) hideDiv(button.id);
+    });
     applyPowerUpgrades();
-    stopTime = false;
-    startTime();
 }
 
 class resource {
     constructor(name, time, base, ul) {
         this.name = name;
+        this.index = NAMES.indexOf(name);
         this.bar = document.querySelector(`#${name}Bar`); // bar to fill up node
         this.doneTab = document.querySelector(`#${name}IsDone`); // thing on top that says if done or not
         this.automationButton = document.querySelector(`#${name}Automation`);
@@ -101,6 +107,20 @@ class resource {
         this.autoSac = false; // should it auto sac
         this.alterUpgrade = false; // is alter upgrade bought
         this.unspentFactor = 2; // time factor reduction for unspent upgrade
+    }
+    prestigeReset() {
+        if (this.autoSac) this.toggleAutoSac();
+        this.unspentUpgrade = false;
+        this.alterUpgrade = false;
+        this.n = N;
+        this.unspentFactor = 2;
+        this.actualTime = TIMES[this.index];
+        this.time = this.actualTime;
+        this.base = BASES[this.index];
+        this.unlocked = UNLOCKED[this.index];
+        this.reset();
+        this.exponent = 0;
+        this.timesSacrificed = 0;
     }
     toggleAutoSac() {
         this.autoSac = this.autoSac ? false : true;
@@ -128,8 +148,8 @@ class resource {
     }
     resetExponent() {
         this.exponent = 0;
-        player[getResourceAbove(this.name)].exponent =
-            player[getResourceAbove(this.name)].exponent - this.timesSacrificed;
+        player[NAMES[this.index + 1]].exponent =
+            player[NAMES[this.index + 1]].exponent - this.timesSacrificed;
         this.timesSacrificed = 0;
     }
     getAlterBoost() {
@@ -184,7 +204,6 @@ function currentRunTime() {
 function gameFinish() {
     currentRunTime();
     stopTime = true;
-    stopFinalTime = true;
 }
 
 // update number bar
@@ -227,8 +246,8 @@ function cheat() {
 
 //checks if resource above is full or not
 function isAboveUnspent(item) {
-    let above = getResourceAbove(item); // get the above resource
-    player[above].previousFull = player[item].percentage === 100 ? true : false;
+    player[NAMES[player[item].index + 1]].previousFull =
+        player[item].percentage === 100 ? true : false;
 }
 
 //checks if resource is unlocked if it is it increments it
@@ -246,7 +265,6 @@ function toFill() {
 function buttonLook() {
     let buttons = document.querySelectorAll("button");
     buttons.forEach((button) => {
-        button.removeEventListener("click", buttonfn);
         if (!bought.includes(button.id)) {
             button.addEventListener("click", buttonfn);
             button.classList.remove("bought");
@@ -295,8 +313,7 @@ function unlock(id) {
     let item = id.slice(0, -6);
     if (item in player) {
         // means a resource unlock
-        let spendIndex = NAMES.indexOf(item) - 1; // spent resource is one below it
-        if (player[NAMES[spendIndex]].spend()) {
+        if (player[NAMES[player[item].index - 1]].spend()) {
             player[item].unlock();
             removeButtonFn(`${item}Unlock`);
         }
@@ -311,7 +328,7 @@ function unlock(id) {
 }
 
 function removeLowerExp(item) {
-    let below = NAMES.indexOf(item) - 1;
+    let below = player[item].index - 1;
     if (below >= 0) {
         player[NAMES[below]].exponent =
             player[NAMES[below]].exponent -
@@ -351,7 +368,7 @@ function upgradeButtons(id) {
             bought.push(id);
             bought.push(`${change}Unlock`);
             removeButtonFn(id);
-            UNLOCKED[NAMES.indexOf(change)] = true;
+            UNLOCKED[player[change].index] = true;
         }
     }
 }
@@ -405,14 +422,9 @@ function skillButtons(id) {
     }
 }
 
-function getResourceAbove(prev) {
-    return NAMES[NAMES.indexOf(prev) + 1];
-}
-
 function buyAutomation(id) {
     let item = id.slice(0, -7);
-    let index = NAMES.indexOf(item);
-    if (index <= 2) {
+    if (player[item].index <= 2) {
         if (player["delta"].spend()) {
             showDiv(item + "Automation");
             removeButtonFn(id);
@@ -427,8 +439,7 @@ function buyAutomation(id) {
 
 function resourceSacrifice(item) {
     if (player[item].spend()) {
-        let above = getResourceAbove(item);
-        player[above].exponent++;
+        player[NAMES[player[item].index + 1]].exponent++;
         player[item].sacrafice();
     }
 }
@@ -446,24 +457,24 @@ function buyPower(id) {
         updateNumber();
     }
     if (persistant.upg) {
-        persistant.upg = false;
+        let toggle = document.querySelector("#upgradeToggle");
         let buttons = document.querySelectorAll(".upgrade");
         buttons.forEach((button) => {
-            addAutobuy(button.id);
+            if (toggle.classList.contains("toggle")) addAutobuy(button.id);
         });
         showDiv("upgradeToggle");
     } else if (persistant.ski) {
-        persistant.ski = false;
+        let toggle = document.querySelector("#skillToggle");
         let buttons = document.querySelectorAll(".skill");
         buttons.forEach((button) => {
-            addAutobuy(button.id);
+            if (toggle.classList.contains("toggle")) addAutobuy(button.id);
         });
         showDiv("skillToggle");
     } else if (persistant.aut) {
-        persistant.aut = false;
+        let toggle = document.querySelector("#automateToggle");
         let buttons = document.querySelectorAll(".automate");
         buttons.forEach((button) => {
-            addAutobuy(button.id);
+            if (toggle.classList.contains("toggle")) addAutobuy(button.id);
         });
         showDiv("automateToggle");
     }
@@ -504,7 +515,12 @@ function buttonActual(id) {
     } else if (id.includes("Toggle")) {
         let buttons = document.querySelectorAll(`.${id.slice(0, -6)}`);
         buttons.forEach((button) => {
-            addAutobuy(button.id);
+            if (
+                !button.classList.contains("bought") &&
+                !button.classList.contains("autobuy")
+            ) {
+                addAutobuy(button.id);
+            } else addAutobuy(button.id, true);
         });
         let button = document.querySelector(`#${id}`);
         button.classList.toggle("toggle");
@@ -516,9 +532,10 @@ function buttonfn(e) {
     buttonActual(id);
 }
 
-function addAutobuy(id) {
+function addAutobuy(id, remove = false) {
     let button = document.querySelector(`#${id}`);
-    button.classList.toggle("autobuy");
+    if (remove) button.classList.remove("autobuy");
+    else button.classList.add("autobuy");
 }
 
 function revealButtons() {
@@ -542,18 +559,23 @@ function automaticSac() {
 }
 
 function automaticClick() {
-    let buttons = document.querySelectorAll(".autobuy");
-    buttons.forEach((button) => {
-        button.click();
-    });
+    let buttons;
+    let autoBuyTime = window.setInterval(() => {
+        buttons = document.querySelectorAll(".autobuy");
+        buttons.forEach((button) => {
+            button.click();
+            if (button.classList.contains("bought"))
+                addAutobuy(button.id, true);
+        });
+        if (stopTime) clearInterval(autoBuyTime);
+    }, 200);
 }
 
 function startTime() {
     let gameTime = window.setInterval(() => {
         toFill();
         automaticSac();
-        automaticClick();
-        if (stopTime || stopFinalTime) clearInterval(gameTime);
+        if (stopTime) clearInterval(gameTime);
     }, UPDATE * 1000);
 }
 
@@ -570,7 +592,7 @@ function revealButtonTime() {
     let revealTime = window.setInterval(() => {
         revealButtons();
         showTime();
-        if (stopFinalTime) clearInterval(revealTime);
+        if (stopTime) clearInterval(revealTime);
     }, 1000);
 }
 
@@ -621,7 +643,7 @@ function showDesc(e) {
         let item = id.slice(0, -6);
         if (NAMES.includes(item)) {
             text.innerHTML = `Unlock &${item};.`;
-            cost.innerHTML = `Restart &${NAMES[NAMES.indexOf(item) - 1]};.`;
+            cost.innerHTML = `Restart &${NAMES[player[item].index - 1]};.`;
         } else {
             let spend = NAMES[COST[item]];
             text.innerHTML = `Unlock ${item} permanently.`;
@@ -632,7 +654,7 @@ function showDesc(e) {
         cost.innerHTML = `Restart &${id.slice(0, -11)};.`;
     } else if (id.includes("UnspentUpgrade")) {
         text.innerHTML = `Reduce the time of 
-            &${getResourceAbove(id.slice(0, -14))}; 
+            &${NAMES[player[id.slice(0, -14)].index + 1]}; 
             if &${id.slice(0, -14)}; is unspent.`;
         cost.innerHTML = `Restart &${id.slice(0, -14)};.`;
     } else if (id.includes("KeepUpgrade")) {
@@ -655,7 +677,7 @@ function showDesc(e) {
         cost.innerHTML = "";
     } else if (id.includes("AlterSac")) {
         text.innerHTML = `Reduce time of &${id.slice(0, -8)};
-        and &${getResourceAbove(id.slice(0, -8))};.`;
+        and &${NAMES[player[id.slice(0, -8)].index + 1]};.`;
         cost.innerHTML = `Restart &${id.slice(0, -8)}; (repeatable).`;
     } else if (id.includes("Automation")) {
         title.innerHTML = "";
@@ -663,8 +685,10 @@ function showDesc(e) {
         cost.innerHTML = "";
     } else if (id.includes("AutoSac")) {
         text.innerHTML = `Unlock Autosacrificing for &${id.slice(0, -7)};.`;
-        let index = NAMES.indexOf(id.slice(0, -7));
-        cost.innerHTML = index < 3 ? "Restart &delta;." : "Restart &rho;.";
+        cost.innerHTML =
+            player[id.slice(0, -7)].index < 3
+                ? "Restart &delta;."
+                : "Restart &rho;.";
     } else {
         text.innerHTML = descriptions[id][0];
         cost.innerHTML = descriptions[id][1];
@@ -694,6 +718,8 @@ function firstTime() {
     revealButtonTime();
     // description
     createHoverEvents();
+    // autobuy
+    automaticClick();
 }
 
 function play() {

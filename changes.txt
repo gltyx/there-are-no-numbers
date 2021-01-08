@@ -27,4 +27,11 @@ bug fixes:
 
 bug fixes:
 - styling messing up when game is full screen
-- tried to fix lag after getting a new power
+- tried to fix lag after getting a new power - need to fix this
+
+1.4 - 
+
+cleaned up code a bit
+tried to fix lag after getting new power
+changed autobuy to remove clicking after bought
+made the bar showing done resources larger
