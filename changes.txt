@@ -32,6 +32,12 @@ bug fixes:
 1.4 - 
 
 cleaned up code a bit
-tried to fix lag after getting new power
+fixed lag after getting new power - caused by autobuying
 changed autobuy to remove clicking after bought
 made the bar showing done resources larger
+
+1.5 -
+
+fixed autobuy buttons not showing up
+fixed descriptions
+should be fully playable now ??

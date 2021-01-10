@@ -463,14 +463,16 @@ function buyPower(id) {
             if (toggle.classList.contains("toggle")) addAutobuy(button.id);
         });
         showDiv("upgradeToggle");
-    } else if (persistant.ski) {
+    }
+    if (persistant.ski) {
         let toggle = document.querySelector("#skillToggle");
         let buttons = document.querySelectorAll(".skill");
         buttons.forEach((button) => {
             if (toggle.classList.contains("toggle")) addAutobuy(button.id);
         });
         showDiv("skillToggle");
-    } else if (persistant.aut) {
+    }
+    if (persistant.aut) {
         let toggle = document.querySelector("#automateToggle");
         let buttons = document.querySelectorAll(".automate");
         buttons.forEach((button) => {
@@ -620,7 +622,7 @@ function showDesc(e) {
             "Restart &Xi;",
         ],
         upgradeToggle: ["Toggle Autobuying Upgrades", ""],
-        autoToggle: ["Toggle Autobuying Automation", ""],
+        automateToggle: ["Toggle Autobuying Automation", ""],
         skillToggle: ["Toggle Autobuying Skills", ""],
     };
     const tabs = [
@@ -730,4 +732,3 @@ function play() {
 }
 
 firstTime();
-//cheat();
