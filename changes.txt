@@ -48,3 +48,8 @@ fixed buy autosac delta showing too early
 added ending
 removed settings and added autobuy tabs to that tabbing
 removed autosac upgrades
+
+1.7 -
+
+changed restart -> unlock
+alter -> Sacrifice

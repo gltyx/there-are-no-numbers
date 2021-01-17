@@ -662,7 +662,7 @@ function showDesc(e) {
     let buttonText = e.target.innerHTML.trim();
     const descriptions = {
         globalTimeSkill: ["Reduce Time of Everything.", "Restart &beta;."],
-        gammaMaxSkill: ["Increase Max Alter Effect.", "Restart &gamma;."],
+        gammaMaxSkill: ["Increase Max Sacrifice Effect.", "Restart &gamma;."],
         gammaBaseSkill: ["Increase Sacrifice Efficiency.", "Restart &gamma;."],
         deltaAutoSkill: ["Increase Unspent Upgrade Bonus.", "Restart &delta;."],
         deltaTimeSkill: ["Reduce Time of Everything.", "Restart &delta;."],
@@ -672,10 +672,10 @@ function showDesc(e) {
         autPower: ["Automatically Buy Automation.", "Restart &rho;."],
         timePower: ["Reduce Time of Everything.", "Restart &Xi;."],
         autoPower: ["Increase Unspent Upgrade Effect.", "Restart &Xi;."],
-        sacrificePower: ["Increase Max Alter Effect.", "Restart &Xi;."],
+        sacrificePower: ["Increase Max Sacrifice Effect.", "Restart &Xi;."],
         numberIncrement: [
             "Increase Number Bar. <br /> Getting a power also increases number bar.",
-            "Restart &Xi;",
+            "Restart &Xi;.",
         ],
         upgradeToggle: ["Toggle Autobuying Upgrades", ""],
         automateToggle: ["Toggle Autobuying Automation", ""],
@@ -683,10 +683,10 @@ function showDesc(e) {
     };
     const tabs = [
         "Generators",
-        "Restart",
+        "Unlock",
         "Upgrades",
         "Skills",
-        "Alter",
+        "Sacrifice",
         "Automation",
         "Powers",
         "Number",
@@ -704,6 +704,7 @@ function showDesc(e) {
             cost.innerHTML = `Restart &${NAMES[player[item].index - 1]};.`;
         } else {
             let spend = NAMES[COST[item]];
+            if (item === "alter") item = "sacrifice";
             text.innerHTML = `Unlock ${item} permanently.`;
             cost.innerHTML = `Restart &${spend};.`;
         }
