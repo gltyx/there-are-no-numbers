@@ -41,3 +41,10 @@ made the bar showing done resources larger
 fixed autobuy buttons not showing up
 fixed descriptions
 should be fully playable now ??
+
+1.6 -
+
+fixed buy autosac delta showing too early
+added ending
+removed settings and added autobuy tabs to that tabbing
+removed autosac upgrades

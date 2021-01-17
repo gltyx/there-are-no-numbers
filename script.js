@@ -202,8 +202,63 @@ function currentRunTime() {
 }
 
 function gameFinish() {
-    currentRunTime();
+    let [h, m, s] = currentRunTime();
     stopTime = true;
+    let finalCutscene = () => {
+        hideGame();
+        hideDiv("tabs");
+        hideDiv("desc");
+        let divs = document.querySelectorAll(`.isDone`);
+        divs.forEach((div) => {
+            div.classList.add("hidden");
+        });
+        function typeOut(txt, div, time, speed) {
+            let i = 0;
+            let check = () => {
+                if (div.id === "gameTitle") div.innerHTML = "";
+            };
+            let typeWriter = () => {
+                if (i < txt.length) {
+                    if (div.id === "gameTitle")
+                        div.innerHTML = txt.slice(0, i + 1);
+                    else div.innerHTML += txt.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    div.innerHTML += "<br>";
+                }
+            };
+            setTimeout(typeWriter, time);
+        }
+        let texts = [
+            "You have successfully generated a number.",
+            "I guess you deserve a number.",
+            "So here is a number:",
+            `${
+                (Math.floor(Math.random() * 10) + 1) **
+                (Math.floor(Math.random() * 10) + 1)
+            }`,
+            `I'll fix the title.`,
+            `there is a number`,
+            `You took ${h} hours, ${m} minutes and ${s} seconds.`,
+        ];
+        divs = [
+            document.querySelector("#finishType"),
+            document.querySelector("#finishType"),
+            document.querySelector("#finishType"),
+            document.querySelector("#numberType"),
+            document.querySelector("#funnyType"),
+            document.querySelector("#gameTitle"),
+            document.querySelector("#timeType"),
+        ];
+        let speeds = [70, 70, 70, 500, 70, 250, 70];
+        let time = 0;
+        for (x in texts) {
+            typeOut(texts[x], divs[x], time, speeds[x]);
+            time += (texts[x].length + 5) * speeds[x];
+        }
+    };
+    setTimeout(finalCutscene, 2000);
 }
 
 // update number bar
@@ -581,19 +636,20 @@ function startTime() {
     }, UPDATE * 1000);
 }
 
-function showTime() {
+// there are no numbers !!!
+/*function showTime() {
     let [h, m, s] = currentRunTime();
     let div = document.querySelector("#timeElapsed");
     let time = document.createElement("p");
     time.textContent = `${h} hours, ${m} minutes and ${s} seconds`;
     div.textContent = "";
     div.appendChild(time);
-}
+}*/
 
 function revealButtonTime() {
     let revealTime = window.setInterval(() => {
         revealButtons();
-        showTime();
+        //showTime();
         if (stopTime) clearInterval(revealTime);
     }, 1000);
 }

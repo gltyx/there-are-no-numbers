@@ -159,9 +159,15 @@ body {
     animation-iteration-count: infinite;
 }
 @keyframes pulse {
-    0%   {filter: invert(0%)}
-  50%  {filter: invert(100%)}
-  100% {filter: invert(0%)}
+    0% {
+        filter: invert(0%);
+    }
+    50% {
+        filter: invert(100%);
+    }
+    100% {
+        filter: invert(0%);
+    }
 }
 .generatorsText {
     color: white;
@@ -182,6 +188,6 @@ body {
         width: 960px;
     }
     #theGame {
-        width: 960px;;
+        width: 960px;
     }
 }
