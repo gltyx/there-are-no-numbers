@@ -1,9 +1,3 @@
-/*
-1) settings -> music?
-
-2) balance
-
-*/
 let player = {};
 
 let bought = [];
@@ -230,6 +224,10 @@ function gameFinish() {
             };
             setTimeout(typeWriter, time);
         }
+        let ftime =
+            h === 0
+                ? `You took ${m} minutes and ${s} seconds.`
+                : `You took ${h} hours, ${m} minutes and ${s} seconds.`;
         let texts = [
             "You have successfully generated a number.",
             "I guess you deserve a number.",
@@ -240,7 +238,7 @@ function gameFinish() {
             }`,
             `I'll fix the title.`,
             `there is a number`,
-            `You took ${h} hours, ${m} minutes and ${s} seconds.`,
+            ftime,
         ];
         divs = [
             document.querySelector("#finishType"),
@@ -408,11 +406,11 @@ function upgradeButtons(id) {
         }
     } else if (item.includes("Alter")) {
         let change = item.slice(0, -5);
-        if (player[change].point && player[change].exponent >= 10) {
+        if (player[change].point && player[change].timesSacrificed >= 10) {
+            removeLowerExp(change);
             player[change].alterUpgrade = true;
             player[change].spend();
             player[change].resetExponent();
-            removeLowerExp(change);
             player[change].n++;
             player[change].actualTime = player[change].actualTime * 1.2;
             removeButtonFn(id);
@@ -705,7 +703,7 @@ function showDesc(e) {
         } else {
             let spend = NAMES[COST[item]];
             if (item === "alter") item = "sacrifice";
-            text.innerHTML = `Unlock ${item} permanently.`;
+            text.innerHTML = `Unlock the ${item} tab permanently.`;
             cost.innerHTML = `Restart &${spend};.`;
         }
     } else if (id.includes("TimeUpgrade")) {
@@ -717,7 +715,7 @@ function showDesc(e) {
             if &${id.slice(0, -14)}; is unspent.`;
         cost.innerHTML = `Restart &${id.slice(0, -14)};.`;
     } else if (id.includes("KeepUpgrade")) {
-        text.innerHTML = `Have &${id.slice(0, -11)}; permanently.`;
+        text.innerHTML = `Keep &${id.slice(0, -11)}; after buying a power.`;
         cost.innerHTML = `Restart &rho;.`;
     } else if (id.includes("AlterUpgrade")) {
         text.innerHTML = `Boosts effectiveness of 

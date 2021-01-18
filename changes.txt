@@ -53,3 +53,8 @@ removed autosac upgrades
 
 changed restart -> unlock
 alter -> Sacrifice
+
+1.8 -
+
+clarified a few things regarding powers and keep resource upgrades
+changed finish a bit
