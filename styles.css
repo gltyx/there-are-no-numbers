@@ -5,6 +5,7 @@ html {
     font-family: arial;
     font-size: 20px;
     margin-left: 10px;
+    user-select: none;
 }
 button,
 input[type="submit"],

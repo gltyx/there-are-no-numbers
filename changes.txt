@@ -58,3 +58,7 @@ alter -> Sacrifice
 
 clarified a few things regarding powers and keep resource upgrades
 changed finish a bit
+
+final - 
+
+can no longer highlight text
