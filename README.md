@@ -1,1 +1,3 @@
-# there-are-no-numbers
+# therearenonumbers
+
+short idle game by chabetto
